@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jesper Nytun</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper:   #f5f1eb;
+      --paper-2: #ede9e1;
+      --paper-3: #e4ddd1;
+      --ink:     #1a1814;
+      --ink-2:   #4a4640;
+      --ink-3:   #8a857e;
+      --accent:  #c0552a;
+      --accent-l:#f0ddd4;
+      --border:  #d4cfc8;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(245,241,235,0.92);
+      backdrop-filter: blur(10px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+    section { padding: 96px 0; }
+
+    /* ── HERO ── */
+    #home {
+      padding-top: 160px;
+      padding-bottom: 80px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .hero-name {
+      font-family: var(--serif);
+      font-size: clamp(52px, 8vw, 80px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 32px;
+    }
+    .hero-desc {
+      max-width: 520px;
+      font-size: 16px;
+      color: var(--ink-2);
+      line-height: 1.8;
+      margin-bottom: 48px;
+    }
+    .hero-meta { display: flex; gap: 40px; flex-wrap: wrap; }
+    .meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .meta-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .meta-value { font-size: 14px; color: var(--ink-2); }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .section-number { font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: 0.05em; }
+    .section-title  { font-family: var(--serif); font-size: 32px; font-weight: 400; color: var(--ink); }
+    .section-line   { flex: 1; height: 1px; background: var(--border); margin-left: 8px; }
+
+    /* ── ABOUT ── */
+    #about { border-bottom: 1px solid var(--border); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .about-text p { color: var(--ink-2); margin-bottom: 20px; font-size: 15px; }
+    .about-text p:last-child { margin-bottom: 0; }
+    .sidebar-block { margin-bottom: 36px; }
+    .sidebar-block-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 10px;
+    }
+    .sidebar-block-content { font-size: 14px; color: var(--ink-2); line-height: 1.7; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--ink-2);
+      background: var(--paper-2);
+    }
+
+    /* ── PROJECTS ── */
+    #projects { border-bottom: 1px solid var(--border); }
+    .projects-list { display: flex; flex-direction: column; }
+    .project-card {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 24px;
+      align-items: start;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+    .project-card:first-child { border-top: 1px solid var(--border); }
+    .project-card:hover .project-name { color: var(--accent); }
+    .project-card:hover .project-arrow { opacity: 1; transform: translateX(0); }
+    .project-index { font-family: var(--mono); font-size: 11px; color: var(--ink-3); padding-top: 4px; }
+    .project-name {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 6px;
+      transition: color 0.2s;
+    }
+    .project-desc { font-size: 14px; color: var(--ink-2); line-height: 1.65; margin-bottom: 12px; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .project-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 8px;
+      background: var(--accent-l);
+      color: var(--accent);
+      border-radius: 2px;
+    }
+    .project-arrow {
+      font-size: 18px;
+      color: var(--accent);
+      padding-top: 2px;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    /* ── EXPERIENCE (shared styles) ── */
+    #experience, #volunteering { border-bottom: 1px solid var(--border); }
+
+    .exp-list { display: flex; flex-direction: column; gap: 0; }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 24px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-item:first-child { border-top: 1px solid var(--border); }
+
+    .exp-period {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+      padding-top: 5px;
+      line-height: 1.5;
+    }
+
+    .exp-body {}
+
+    .exp-role {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .exp-org {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .exp-desc {
+      font-size: 14px;
+      color: var(--ink-2);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .exp-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 8px;
+      background: var(--paper-2);
+      border: 1px solid var(--border);
+      color: var(--ink-3);
+      border-radius: 2px;
+    }
+
+    /* ── CONTACT ── */
+    .contact-intro {
+      font-size: 15px;
+      color: var(--ink-2);
+      max-width: 480px;
+      margin-bottom: 48px;
+    }
+    .contact-links { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+    .contact-link {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-decoration: none;
+      padding: 20px 28px;
+      border: 1px solid var(--border);
+      background: var(--paper-2);
+      min-width: 160px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); background: var(--accent-l); }
+    .contact-link-platform {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .contact-link-handle { font-size: 14px; color: var(--ink); }
+
+    /* ── CONTACT FORM ── */
+    .contact-form { max-width: 540px; display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .form-input, .form-textarea {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--ink);
+      background: var(--paper-2);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+      resize: none;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--accent); background: var(--paper); }
+    .form-textarea { height: 130px; }
+    .form-submit {
+      align-self: flex-start;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--paper);
+      background: var(--ink);
+      border: 1px solid var(--ink);
+      padding: 13px 28px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .form-submit:hover { background: var(--accent); border-color: var(--accent); }
+    .form-status { font-family: var(--mono); font-size: 12px; color: var(--ink-3); min-height: 20px; }
+    .form-status.ok  { color: #5a8a5a; }
+    .form-status.err { color: var(--accent); }
+    @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+
+    /* ── FOOTER ── */
+    footer { padding: 40px 0; border-top: 1px solid var(--border); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; }
+    .footer-text { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+    .footer-flags { font-size: 16px; letter-spacing: 4px; }
+
+    /* ── FADE-UP ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 18px; }
+      section { padding: 64px 0; }
+      #home { padding-top: 120px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .project-card { grid-template-columns: 52px 1fr; }
+      .project-arrow { display: none; }
+      .exp-item { grid-template-columns: 64px 1fr; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a class="nav-logo" href="#home">jesper<span>nytun</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#volunteering">Volunteering</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home">
+    <div class="container">
+      <p class="hero-tag fade-up">Control Systems & Electronics · INSA Toulouse</p>
+      <h1 class="hero-name fade-up" style="transition-delay:.07s">Jesper<br>Nytun</h1>
+      <p class="hero-desc fade-up" style="transition-delay:.14s">
+        Third-year engineering student at INSA Toulouse, specialising in automation
+        and electronics. I build things out of curiosity and try to learn something
+        new with each project.
+      </p>
+      <div class="hero-meta fade-up" style="transition-delay:.21s">
+        <div class="meta-item">
+          <span class="meta-label">Degree</span>
+          <span class="meta-value">M.Eng — Automation & Electronics</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">University</span>
+          <span class="meta-value">Institut National des Sciences Appiquées de Toulouse</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Location</span>
+          <span class="meta-value">Toulouse, France</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="section-header fade-up">
+        <span class="section-number">01</span>
+        <h2 class="section-title">About</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="about-grid">
+        <div class="about-text fade-up">
+          <p>
+            I'm a Norwegian engineering student in my third year at Institut National
+            des Sciences Appliquées de Toulouse, studying automation and electronics.
+            My coursework spans control systems, signal processing, analog and digital
+            electronics, and computer architecture. Currently aiming for a double degree track in finance.
+          </p>
+          <p>
+            Outside of coursework I tend to work on projects that scratch an itch —
+            whether that's automating something tedious at work, building a graphical
+            application from scratch, or digging into finance out of curiosity. I'm also involved in student
+            life through Tekna, the Norwegian association for technology and science graduates. 
+          </p>
+          <p>
+            I'm aiming for a career at the intersection of engineering and finance, where I can apply
+            technical skills to quantitative and qualitative modelling to help in decision making processes.
+          </p>
+        </div>
+        <div class="fade-up" style="transition-delay:.1s">
+          <div class="sidebar-block">
+            <div class="sidebar-block-label">Programming</div>
+            <div class="tag-list">
+              <span class="tag">C</span><span class="tag">Python</span><span class="tag">Ada</span>
+              <span class="tag">Bash</span><span class="tag">SQL</span><span class="tag">Assembly</span>
+            </div>
+          </div>
+          <div class="sidebar-block">
+            <div class="sidebar-block-label">Software & Tools</div>
+            <div class="tag-list">
+              <span class="tag">MATLAB & Simulink</span><span class="tag">LTSpice</span>
+              <span class="tag">LabVIEW</span><span class="tag">Git</span>
+            </div>
+          </div>
+          <div class="sidebar-block">
+            <div class="sidebar-block-label">Languages</div>
+            <div class="sidebar-block-content">
+              Norwegian C2 &nbsp;·&nbsp; English C2<br>
+              French B2 &nbsp;·&nbsp; German B1
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-header fade-up">
+        <span class="section-number">02</span>
+        <h2 class="section-title">Projects</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="projects-list">
+
+        <a class="project-card fade-up" href="https://github.com/jespernytun/othelloSDL3" target="_blank" rel="noopener">
+          <span class="project-index">01</span>
+          <div>
+            <div class="project-name">OthelloSDL3</div>
+            <p class="project-desc">Graphical implementation of the Othello board game. Originally written in Ada, translated to C and rendered with SDL3. Personal project making my favorite boardgame from the bottom up</p>
+            <div class="project-tags"><span class="project-tag">C</span><span class="project-tag">Ada</span><span class="project-tag">SDL3</span><span class="project-tag">Graphics</span></div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+        <a class="project-card fade-up" href="https://github.com/jespernytun/NetworkTP" target="_blank" rel="noopener" style="transition-delay:.05s">
+          <span class="project-index">02</span>
+          <div>
+            <div class="project-name">NetworkTP</div>
+            <p class="project-desc">A tsock-based client/server for UDP and TCP communication in C. A practical networking lab going into socket programming and transport layer protocols.</p>
+            <div class="project-tags"><span class="project-tag">C</span><span class="project-tag">TCP/UDP</span><span class="project-tag">Sockets</span><span class="project-tag">Networks</span></div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+        <a class="project-card fade-up" href="https://github.com/jespernytun/pricelist_converter" target="_blank" rel="noopener" style="transition-delay:.1s">
+          <span class="project-index">03</span>
+          <div>
+            <div class="project-name">Pricelist Converter</div>
+            <p class="project-desc">Built for work at Norske Nettbutikker AS. Converts supplier price lists from PDF to Excel for direct import, eliminating a tedious manual task.</p>
+            <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">Pandas</span><span class="project-tag">Jupyter</span><span class="project-tag">PDF → Excel</span></div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+        <a class="project-card fade-up" href="https://github.com/jespernytun/portfolioAnalysis" target="_blank" rel="noopener" style="transition-delay:.15s">
+          <span class="project-index">04</span>
+          <div>
+            <div class="project-name">Portfolio Analysis</div>
+            <p class="project-desc">Personal finance project built out of curiosity. Retrieves market data via yfinance and analyses an investment portfolio. A personal introduction to risk metrics.</p>
+            <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">Jupyter</span><span class="project-tag">yfinance</span><span class="project-tag">Finance</span></div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+        <a class="project-card fade-up" href="https://github.com/jespernytun/jespernytun.com" target="_blank" rel="noopener" style="transition-delay:.2s">
+          <span class="project-index">05</span>
+          <div>
+            <div class="project-name">This Website</div>
+            <p class="project-desc">Static personal site hosted via GitHub Pages. The first version was built from scratch in ~48 hours. This is the third version, rebuilt with some help.</p>
+            <div class="project-tags"><span class="project-tag">HTML</span><span class="project-tag">CSS</span><span class="project-tag">JavaScript</span><span class="project-tag">GitHub Pages</span></div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-header fade-up">
+        <span class="section-number">03</span>
+        <h2 class="section-title">Work Experience</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="exp-list">
+
+        <div class="exp-item fade-up">
+          <div class="exp-period">2022<br>— present</div>
+          <div class="exp-body">
+            <div class="exp-role">Web Coordinator</div>
+            <div class="exp-org">Norske Nettbutikker AS — Bergen, Norway</div>
+            <p class="exp-desc">
+              Managing product pages for multiple webshops, including Homestore.no and Gym.no. Developed Python
+              workflow automation to speed up repetitive tasks, and held leadership
+              responsibilities during the summer of 2025.
+            </p>
+            <div class="exp-tags">
+              <span class="exp-tag">Python</span>
+              <span class="exp-tag">Automation</span>
+              <span class="exp-tag">E-commerce</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- VOLUNTEERING -->
+  <section id="volunteering">
+    <div class="container">
+      <div class="section-header fade-up">
+        <span class="section-number">04</span>
+        <h2 class="section-title">Volunteering</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="exp-list">
+
+        <div class="exp-item fade-up">
+          <div class="exp-period">2023<br>— present</div>
+          <div class="exp-body">
+            <div class="exp-role">Student Representative</div>
+            <div class="exp-org">Tekna Student — Toulouse, France</div>
+            <p class="exp-desc">
+              Organising events for Norwegian students in Toulouse and involved in
+              student politics through Tekna, the Norwegian association for technology
+              and science graduates. Had the honor to be a student representative at the 2025 general assembly in Oslo.
+            </p>
+            <div class="exp-tags">
+              <span class="exp-tag">Student politics</span>
+              <span class="exp-tag">Events</span>
+              <span class="exp-tag">Community</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="exp-item fade-up" style="transition-delay:.08s">
+          <div class="exp-period">2025<br>— present</div>
+          <div class="exp-body">
+            <div class="exp-role">
+              <a href="https://github.com/norginsa-toulouse/norginsa-website" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">Web Contributor ↗</a>
+            </div>
+            <div class="exp-org"><a href="https://norginsa.no" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;">norginsa.no</a> — Toulouse, France</div>
+            <p class="exp-desc">
+              Contributed to the NorgINSA website, a resource promoting engineering
+              studies at INSA Toulouse for Norwegian students. The site covers
+              practical information about student life, applications, and the programme.
+            </p>
+            <div class="exp-tags">
+              <span class="exp-tag">HTML</span>
+              <span class="exp-tag">Open Source</span>
+              <span class="exp-tag">Student outreach</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-header fade-up">
+        <span class="section-number">05</span>
+        <h2 class="section-title">Contact</h2>
+        <div class="section-line"></div>
+      </div>
+      <p class="contact-intro fade-up">
+        Feel free to reach out — whether it's about an internship, questions about INSA,
+        or just to say hello.
+      </p>
+
+      <!-- Social links -->
+      <div class="contact-links fade-up" style="transition-delay:.1s">
+        <a class="contact-link" href="https://www.linkedin.com/in/jesper-bartholomay-nytun-9496a5281/" target="_blank" rel="noopener">
+          <span class="contact-link-platform">LinkedIn</span>
+          <span class="contact-link-handle">Jesper Nytun</span>
+        </a>
+        <a class="contact-link" href="https://github.com/jespernytun" target="_blank" rel="noopener">
+          <span class="contact-link-platform">GitHub</span>
+          <span class="contact-link-handle">jespernytun</span>
+        </a>
+        <a class="contact-link" href="https://www.instagram.com/jesper_nytun/" target="_blank" rel="noopener">
+          <span class="contact-link-platform">Instagram</span>
+          <span class="contact-link-handle">@jesper_nytun</span>
+        </a>
+      </div>
+
+      <!-- Contact form (uses Formspree — see note in code) -->
+      <div class="contact-form fade-up" style="transition-delay:.18s">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="cf-name">Name</label>
+            <input class="form-input" id="cf-name" type="text" placeholder="Your name" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cf-email">Email</label>
+            <input class="form-input" id="cf-email" type="email" placeholder="your@email.com" autocomplete="off">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cf-msg">Message</label>
+          <textarea class="form-textarea" id="cf-msg" placeholder="What's on your mind?"></textarea>
+        </div>
+        <button class="form-submit" id="cf-submit">Send message</button>
+        <p class="form-status" id="cf-status"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-text">© 2025 Jesper Nytun — Made in Norway & France</span>
+        <span class="footer-flags">🇳🇴 🇫🇷</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav border on scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // Fade-up on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Hero entrance
+    document.querySelectorAll('#home .fade-up').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 80);
+    });
+
+    // ── Contact form (Formspree)
+    // To activate: sign up free at https://formspree.io, create a form,
+    // and replace 'YOUR_FORM_ID' below with your actual form ID.
+    const FORMSPREE_ID = 'YOUR_FORM_ID';
+
+    document.getElementById('cf-submit').addEventListener('click', async () => {
+      const name    = document.getElementById('cf-name').value.trim();
+      const email   = document.getElementById('cf-email').value.trim();
+      const message = document.getElementById('cf-msg').value.trim();
+      const status  = document.getElementById('cf-status');
+      const btn     = document.getElementById('cf-submit');
+
+      if (!name || !email || !message) {
+        status.textContent = 'Please fill in all fields.';
+        status.className = 'form-status err';
+        return;
+      }
+      if (FORMSPREE_ID === 'YOUR_FORM_ID') {
+        status.textContent = 'Form not connected yet — see code comment to set up Formspree.';
+        status.className = 'form-status err';
+        return;
+      }
+
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ name, email, message })
+        });
+        if (res.ok) {
+          status.textContent = 'Message sent — I\'ll get back to you soon.';
+          status.className = 'form-status ok';
+          document.getElementById('cf-name').value = '';
+          document.getElementById('cf-email').value = '';
+          document.getElementById('cf-msg').value = '';
+        } else {
+          throw new Error('Server error');
+        }
+      } catch {
+        status.textContent = 'Something went wrong. Try reaching me on LinkedIn instead.';
+        status.className = 'form-status err';
+      }
+
+      btn.textContent = 'Send message';
+      btn.disabled = false;
+    });
+  </script>
+</body>
+</html>
